@@ -1,0 +1,22 @@
+#!/bin/sh
+# Pre-push hook: run all Go tests before any push.
+#
+# Install: sh scripts/install-hooks.sh
+# To bypass in an emergency: git push --no-verify (document why in the commit)
+
+set -e
+
+# 1. Go tests
+printf '[pre-push] Running Go tests...\n' >&2
+if ! go test ./... 2>&1; then
+  printf '\n[pre-push] BLOCKED: Go tests failed. Fix before pushing.\n' >&2
+  exit 1
+fi
+printf '[pre-push] All Go tests passed.\n' >&2
+
+# 2. /sync-docs reminder (non-blocking)
+if [ -f README.md ]; then
+  printf '\n[pre-push] Reminder: run /sync-docs in Claude Code to audit README + docs.\n' >&2
+fi
+
+exit 0

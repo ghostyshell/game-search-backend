@@ -1,0 +1,70 @@
+# Binaries
+server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Go coverage
+coverage.out
+coverage.html
+
+# Dependency directories
+vendor/
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+build/
+dist/
+
+# Go workspace
+go.work
+
+# Local agent instructions (Claude Code)
+.claude/agents/
+.claude/worktrees/
+.claude/plans/
+graphify-out/
+
+# Local-only deploy instructions (carry secrets - never commit)
+.cursor/agents/deploy-registry.md
+.opencode/agents/deploy-registry.md
+
+# Local-only Sliplane SSH debug instructions (carry service handles - never commit)
+.claude/agents/sliplane-ssh.md
+.cursor/agents/sliplane-ssh.md
+.opencode/agents/sliplane-ssh.md
+
+# Local-only one-shot ingest/diagnostic tools under cmd/ (secrets-adjacent)
+cmd/
+# go build output binary (root-anchored)
+/game-search-backend

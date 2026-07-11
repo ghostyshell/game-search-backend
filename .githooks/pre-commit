@@ -1,0 +1,33 @@
+#!/bin/sh
+# Pre-commit: changelog check + keep AGENTS.md in sync with Cursor-rule sources.
+# Installed via `git config core.hooksPath .githooks` (run scripts/install-hooks.sh).
+#
+# When a cursor rule (or AGENTS.md itself, or the generator) is staged, this
+# regenerates AGENTS.md and re-stages it, so a commit can never ship a stale
+# AGENTS.md. AGENTS.md is a generated file; do not edit it by hand.
+
+cd "$(dirname "$0")/.." || exit 1
+
+if ! sh scripts/changelog-check.sh; then
+  exit 1
+fi
+
+# Only act when a relevant file is staged.
+staged=$(git diff --cached --name-only)
+if ! printf '%s\n' "$staged" | grep -qE '^(\.cursor/rules/(ai-guidelines|monorepo)\.md|AGENTS\.md|scripts/sync-agents\.sh)$'; then
+  exit 0
+fi
+
+# Regenerate AGENTS.md from the cursor rule sources.
+if ! sh scripts/sync-agents.sh >/dev/null 2>&1; then
+  echo "[pre-commit] WARNING: scripts/sync-agents.sh failed; AGENTS.md not regenerated." >&2
+  exit 1
+fi
+
+# If AGENTS.md now differs from the staged version, re-stage the regenerated file.
+if ! git diff --quiet -- AGENTS.md; then
+  git add AGENTS.md
+  echo "[pre-commit] regenerated and staged AGENTS.md from .cursor/rules/*.md"
+fi
+
+exit 0
